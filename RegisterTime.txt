@@ -1,0 +1,73 @@
+#r "Newtonsoft.Json"
+#r "SendGrid"
+
+using System.Net;
+using SendGrid.Helpers.Mail;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+
+public static IActionResult Run(HttpRequest req, ILogger log, out SendGridMessage message)
+{
+    log.LogInformation("C# HTTP trigger function processed a request.");
+    
+    // Deserialize the JSON message
+    string requestBody = new StreamReader(req.Body).ReadToEnd();
+    dynamic data = JsonConvert.DeserializeObject(requestBody);
+
+    // Filter the JSON data into variables
+    string userName = data?.userName;
+    string activity = data?.activity;
+    // Get current date
+    string submitDate = DateTime.Now.ToString();
+    string weekDate = data?.Sunday.Date;
+
+    // Get times for each day of the week
+    int? sunTime = data?.Sunday.Hours;
+    int? monTime = data?.Monday.Hours;
+    int? tuesTime = data?.Tuesday.Hours;
+    int? wedTime = data?.Wednesday.Hours;
+    int? thursTime = data?.Thursday.Hours;
+    int? friTime = data?.Friday.Hours;
+    int? satTime = data?.Saturday.Hours;
+
+    // Get the connection string from the environement variables
+    var str = Environment.GetEnvironmentVariable("SQLAZURECONNSTR_sqlConnectionString");
+    
+    message = new SendGridMessage()
+    {
+        Subject = $"New Timesheet Submitted - {userName}",
+        PlainTextContent = $"{userName} submitted a new timesheet on {weekDate}.\n\nActivity: {activity}"
+    };
+
+    try
+    {
+        // Open a connection to the database
+        using (SqlConnection conn = new SqlConnection(str))
+        {
+            conn.Open();
+            // Query to insert a new timesheet
+            var text = "INSERT INTO timesheet (approved, author, items, date_submitted, week_date, sunday_time, monday_time, tuesday_time, wednesday_time, thursday_time, friday_time, saturday_time)" +
+                        $"VALUES (0, '{userName}', '{activity}', '{submitDate}','{weekDate}', '{sunTime}', '{monTime}', '{tuesTime}', '{wedTime}', '{thursTime}', '{friTime}', '{satTime}');";
+                   
+                    // Execute the query
+                    using (SqlCommand cmd = new SqlCommand(text, conn))
+                    {
+                        var row = cmd.ExecuteNonQuery();
+                        log.LogInformation($"{row} rows were added");
+                    }
+        }
+    }
+    catch(Exception ex)
+    {
+        log.LogInformation("Error inserting new column into the timesheet database.");
+    }
+
+    string responseMessage = string.IsNullOrEmpty(userName)
+        ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+                : $"--Timesheet Info--\nAuthor: {userName}\nWork Done: {activity}\nDate Submitted: {submitDate}\nWeek Date: {weekDate}\nSunday: Hours: {sunTime}\nMonday: Hours: {monTime}\nTuesday: Hours: {tuesTime}\nWednesday: Hours: {wedTime}\nThursday: Hours: {thursTime}\nFriday: Hours: {friTime}\nSaturday: Hours: {satTime}";
+            log.LogInformation("response: " + responseMessage);
+            return new OkObjectResult(responseMessage);
+}

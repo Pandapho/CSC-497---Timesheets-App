@@ -1,0 +1,49 @@
+#r "Newtonsoft.Json"
+
+using System.Net;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+
+public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
+{
+    log.LogInformation("C# HTTP trigger function processed a request.");
+
+    string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+    dynamic data = JsonConvert.DeserializeObject(requestBody);
+    string timeId = data?.id;
+
+    // Get the connection string from the environement variables
+    var str = Environment.GetEnvironmentVariable("SQLAZURECONNSTR_sqlConnectionString");
+
+    try
+    {
+        // Open a connection to the database
+        using (SqlConnection conn = new SqlConnection(str))
+        {
+            conn.Open();
+            // Query to insert a new timesheet
+            var text = $"UPDATE timesheet SET approved = 'True' WHERE id = '{timeId}';";
+                   
+                    // Execute the query
+                    using (SqlCommand cmd = new SqlCommand(text, conn))
+                    {
+                        var rows = await cmd.ExecuteNonQueryAsync();
+                        log.LogInformation($"{rows} rows were updated");
+                    }
+        }  
+    }
+    catch(Exception ex)
+    {
+        log.LogInformation("Error approving timesheet.");
+    }
+    
+
+    string responseMessage = string.IsNullOrEmpty(timeId)
+        ? "This HTTP triggered function executed successfully. Pass an Id in to update the timesheet's approved status."
+                : $"The timesheet with an Id = {timeId}, was successfully updated.";
+
+            return new OkObjectResult(responseMessage);
+}

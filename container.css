@@ -1,0 +1,113 @@
+* {
+    margin : 0;
+    padding : 0;
+}
+
+.header {
+    padding: 0px;
+    text-align: center;
+    background: #003d79;
+    color: white;
+    font-size: 30px;
+    border-bottom: 10px solid #d11241;
+  }
+
+
+
+.container {
+    width: 100%;
+    margin: auto;
+    padding-top: 0px 
+}
+.width-60 {
+    width: 60%;
+}
+.d-flex {
+    display: flex;
+}
+.align-item-center {
+    align-items: center;
+}
+
+.alignCenter{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alignRight {
+    text-align: right;
+    margin-left: auto;
+}
+.p-10 {
+    padding: 10px 
+}
+.flex-end {
+    justify-content: flex-end;
+}
+input[type="date"], input[type="number"] , input[type="text"], input[type="password"], select  {
+    height: 35px;
+    border: 2px solid black;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 18px;
+}
+textarea {
+    height: 384px;
+    border: 2px solid black;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 18px;
+    border-radius: 8px;
+    width: 500px;
+}
+.submit {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    outline: none;
+    cursor: pointer;
+    margin-right: 40px;
+    background: #3cb163;
+    
+}
+.submit:hover {
+    box-shadow: 0.1em 0.1em 0.1em rgba(51, 51, 51, 0.6);
+}
+.edit {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    outline: none;
+    cursor: pointer;
+    margin-right: 40px;
+    background: #a72e38;
+    width: 100px 
+}
+.edit:hover {
+    box-shadow: 0.1em 0.1em 0.1em rgba(51, 51, 51, 0.6);
+}
+
+
+.userNameField{
+    margin-bottom: 10px;
+    text-align: center;
+}

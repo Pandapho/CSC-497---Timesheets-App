@@ -1,0 +1,94 @@
+h1 {
+    margin: 0;
+    padding: 0;
+  }
+  html, body, .app {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+  .popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: rgba(0,0,0, 0.5);
+  }
+  .popup_inner {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 25%;
+    bottom: 25%;
+    margin: auto;
+    background: white;
+    height: 250px;
+    text-align: center;
+    padding: 20px;
+    width: 300px;
+  }
+
+  .get {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 16px;
+    margin: 9px 0 0 0;
+    outline: none;
+    cursor: pointer;
+    /* margin-right: 40px; */
+    background: #008000;
+    width: 110px;
+}
+.get:hover {
+    box-shadow: 0.1em 0.1em 0.1em rgba(51, 51, 51, 0.6);
+}
+
+
+.close {
+    position: absolute;
+    right: 8px;
+    top: 5px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+  }
+  .close:hover {
+    opacity: 1;
+  }
+  .close:before, .close:after {
+    position: absolute;
+    left: 15px;
+    content: ' ';
+    height: 33px;
+    width: 2px;
+    background-color: #333;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
+
+    
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+  

@@ -1,0 +1,87 @@
+#r "Newtonsoft.Json"
+
+using System.Net;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+
+public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
+{
+    log.LogInformation("C# HTTP trigger function processed a request.");
+
+    string name = req.Query["name"];
+    string date = req.Query["date"];
+
+    // Get the connection string from the environement variables
+    var str = Environment.GetEnvironmentVariable("SQLAZURECONNSTR_sqlConnectionString");
+
+    Timesheet timesheet = new Timesheet();
+
+    try
+    {
+        // Open a connection to the database
+        using (SqlConnection conn = new SqlConnection(str))
+        {
+            // Query to insert a new timesheet
+            var text = $"SELECT * FROM timesheet WHERE author='{name}' AND week_date='{date}';";
+        
+            using (SqlCommand cmd = new SqlCommand(text, conn))
+            {
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if(reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            timesheet.id = reader["id"].ToString();
+                            timesheet.author = reader["author"].ToString();
+                            timesheet.approved = reader["approved"].ToString();
+                            timesheet.activity = reader["items"].ToString();
+                            timesheet.dateSubmitted = reader["date_submitted"].ToString();
+                            timesheet.weekDate = reader["week_date"].ToString();
+                            timesheet.sunHours = reader["sunday_time"].ToString();
+                            timesheet.monHours = reader["monday_time"].ToString();
+                            timesheet.tuesHours = reader["tuesday_time"].ToString();
+                            timesheet.wedHours = reader["wednesday_time"].ToString();
+                            timesheet.thursHours = reader["thursday_time"].ToString();
+                            timesheet.friHours = reader["friday_time"].ToString();
+                            timesheet.satHours = reader["saturday_time"].ToString();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    catch(Exception ex)
+    {
+        log.LogInformation("Error retrieving the timesheet from the database.");
+    }
+
+    string output = JsonConvert.SerializeObject(timesheet);
+
+    string responseMessage = string.IsNullOrEmpty(name)
+        ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+
+            return new OkObjectResult(output);
+}
+
+public class Timesheet
+{
+    public string id;
+    public string author;
+    public string approved;
+    public string activity;
+    public string dateSubmitted;
+    public string weekDate;
+    public string sunHours;
+    public string monHours;
+    public string tuesHours;
+    public string wedHours;
+    public string thursHours;
+    public string friHours;
+    public string satHours;
+}
